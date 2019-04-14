@@ -1,70 +1,65 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Card, CardImg, CardText, CardBody, CardTitle } from 'reactstrap';
 
-class DishDetail extends Component {
 
-    constructor(props) {
-        super(props);
-    }
+function RenderDish({ dish }) {
+    return (
+        <Card>
+            <CardImg width="100%" src={dish.image} alt={dish.name} />
+            <CardBody>
+                <CardTitle>{dish.name}</CardTitle>
+                <CardText>{dish.description}</CardText>
+            </CardBody>
+        </Card>
+    );
+}
 
-    renderDish(dish) {
+function RenderComments({ comments }) {
+    if (comments.length !== 0 || comments != null) {
+        const comment = comments.map((comment) => {
+            return (
+                <ul className="list-unstyled" key={comment.id}>
+                    <li>{comment.comment}</li>
+                    <li>-- {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(comment.date)))}</li>
+                </ul>
+            );
+        });
         return (
-            <Card>
-                <CardImg width="100%" src={dish.image} alt={dish.name} />
-                <CardBody>
-                    <CardTitle>{dish.name}</CardTitle>
-                    <CardText>{dish.description}</CardText>
-                </CardBody>
-            </Card>
+            <div>
+                <h4>Comments</h4>
+                {comment}
+            </div>
+        )
+    }
+    else {
+        return (
+            <div></div>
         );
     }
+}
 
-    renderComments(comments) {
-        if (comments.length !== 0 || comments != null) {
-            const comment = comments.map((comment) => {
-                return (
-                    <ul className="list-unstyled" key={comment.id}>
-                        <li>{comment.comment}</li>
-                        <li>-- {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(comment.date)))}</li>
-                    </ul>
-                );
-            });
-            return (
-                <div>
-                    <h4>Comments</h4>
-                    {comment}
-                </div>
-            )
-        }
-        else {
-            return (
-                <div></div>
-            );
-        }
-    }
+const DishDetail = (props) => {
+    console.log('DishDetail Component render is invoked');
 
-    render() {
-        if (this.props.selectedDish != null) {
-            const dish = this.props.selectedDish;
-            return (
-                <div className="container">
-                    <div className="row">
-                        <div className="col-12 col-md-5 m-1">
-                            {this.renderDish(dish)}
-                        </div>
-                        <div className="col-12 col-md-5 m-1">
-                            {this.renderComments(dish.comments)}
-                        </div>
+    if (props.selectedDish != null) {
+        const dish = props.selectedDish;
+        return (
+            <div className="container">
+                <div className="row">
+                    <div className="col-12 col-md-5 m-1">
+                        <RenderDish dish={dish} />
+                    </div>
+                    <div className="col-12 col-md-5 m-1">
+                        <RenderComments comments={dish.comments} />
                     </div>
                 </div>
-            );
-        }
-        else {
-            return (
-                <div></div>
-            );
-        }
-
+            </div>
+        );
+    }
+    else {
+        return (
+            <div></div>
+        );
     }
 }
 
